@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SƠ ĐỒ CHỖ NGỒI</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="https://i.postimg.cc/pyby8YYS/toanthayhoanglogo.png">
+</head>
+<body>
+  <div class="header">
+    <p1 id="p1">TOÁN THẦY HOÀNG 2K7</p1>
+    <div class="dropdown">
+      <label for="class-select">LỚP</label>
+      <select id="class-select" onchange="updateClass()">
+        <option value="A">TX1</option>
+        <option value="B">TX2</option>
+        <option value="C">TX3</option>
+      </select>
+    </div>
+  </div>
+  <h1 id="tieude">SƠ ĐỒ CHỖ NGỒI LÀM BÀI TEST</h1>
+  <div>
+    <label for="de-cay-so" id="tieude">ĐỀ CÀY SỐ:</label>
+    <input type="text" id="de-cay-so" name="de-cay-so">
+  </div>
+  <button onclick="randomize()">Sắp xếp chỗ ngồi</button>
+  <table id="classroom"></table>
+  <script src="script.js"></script>
+</body>
+</html>
+<!--Project Sắp xếp chỗ ngồi cho cả 3 lớp TX1, TX2 và TX3-->
