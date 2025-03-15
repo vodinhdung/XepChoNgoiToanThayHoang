@@ -98,10 +98,18 @@ function createTable() {
 // Hàm sắp xếp học sinh ngẫu nhiên vào chỗ ngồi (bỏ qua lối đi và tiêu đề hàng)
 function randomize() {
   var inputField = document.getElementById("de-cay-so");
+  var classSelect = document.getElementById("class-select");
+  
   if (inputField.value.trim() === "") {
     alert("Vui lòng nhập số thứ tự đề vào ô 'ĐỀ CÀY SỐ' trước khi sắp xếp chỗ ngồi!!");
     return;
   }
+  
+  if (classSelect.value === "") {
+    alert("Vui lòng chọn lớp trước khi sắp xếp chỗ ngồi!");
+    return;
+  }
+
   var cells = document.querySelectorAll("#classroom td:not(.aisle):not(.row-header)");
   var assignments = getSeatAssignments();
   shuffle(assignments);
@@ -114,14 +122,17 @@ function randomize() {
 function updateClass() {
   var classSelect = document.getElementById("class-select");
   var selectedClass = classSelect.value;
-  if (selectedClass === "A") {
+  if (selectedClass === "") {
+    alert("Vui lòng chọn lớp trước khi sắp xếp chỗ ngồi!");
+    currentStudents = [];
+  } else if (selectedClass === "A") {
     currentStudents = studentsA;
   } else if (selectedClass === "B") {
     currentStudents = studentsB;
   } else if (selectedClass === "C") {
     currentStudents = studentsC;
   }
-  
+  randomize();
 }
 
 //Tạo bảng và thực hiện sắp xếp ngay khi trang được tải
