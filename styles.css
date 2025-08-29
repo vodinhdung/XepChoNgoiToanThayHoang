@@ -5,6 +5,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Big+Shoulders:opsz,wght@10..72,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 body {
   font-family: Arial, sans-serif;
   text-align: center;
@@ -15,6 +16,7 @@ table {
   border-collapse: collapse;
   margin: 20px auto;
   font-family: 'Inter';
+  align-items: center;
 }
 td {
   border: 1px solid #ccc;
@@ -77,6 +79,7 @@ h1 {
   margin: 0;
   padding-bottom: 10px;
   text-align: center;
+  align-items: center;
 }
 #tieude {
   margin-left: 120px;
@@ -87,38 +90,37 @@ label {
   font-weight: bold;
   margin-top: 20px;
 }
-input[type="text"] {
-  width: 150px;
-  border: none;
+/*Update 29/8/2025*/
+input[type="number"] {
+  width: 100px;
+  border: 2px solid #000000;
+  border-radius: 10px;
   font-size: 25px;
   font-family: 'Dosis', sans-serif;
   text-align: center;
   font-weight: bold;
+  margin-left: 95px;
 }
-
-.dropdown {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  border-radius: 5px;
-}
-.dropdown select {
-  padding: 5px;
-  font-family: 'Dosis', sans-serif;
+input[type="number"]::placeholder {
+  color: #000000;
   font-size: 25px;
+  font-family: 'Dosis', sans-serif;
+  text-align: center;
   font-weight: bold;
-  color: #ffffff;
-  border: none;
-  background: none;
-  appearance: none;
+  opacity: 0.2;
+}
+/* Hiệu ứng ô nhập lỗi */
+#student-count.input-error {
+  border: 2px solid #e74c3c;
+  border-radius: 10px;
+}
+/* Ẩn nút tăng giảm số lượng */
+#student-count::-webkit-outer-spin-button,
+#student-count::-webkit-inner-spin-button {
   -webkit-appearance: none;
-  -moz-appearance: none;
-  text-align: center;
+  margin: 0;
 }
-.dropdown select:focus {
-  background-color: #4CAF50;
-  color: #ffffff;
-  font-weight: bold;
-  border-radius: 5px;
+#student-count {
+  appearance: textfield;
+  align-items: center;
 }
