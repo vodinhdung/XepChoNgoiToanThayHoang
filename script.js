@@ -1,92 +1,20 @@
-// Add số lượng học sinh của mỗi lớp, A=TX1; B=TX2; C=TX3
-var studentsA = [
-  "1", "2", "3", "4",
-  "5", "6", "7", "8",
-  "9", "10", "11", "12",
-  "13", "14", "15", "16",
-  "17", "18", "19", "20",
-  "21", "22", "23", "24",
-  "25", "26", "27", "28",
-  "29", "30", "31", "32",
-  "33", "34", "35", "36",
-  "37", "38", "39", "40",
-  "41", "42", "43", "44",
-  "45", "46", "47", "48",
-  "49", "50", "51", "52",
-  "53", "54", "55", "56"
-];
-var studentsB = [
-  "1", "2", "3", "4",
-  "5", "6", "7", "8",
-  "9", "10", "11", "12",
-  "13", "14", "15", "16",
-  "17", "18", "19", "20",
-  "21", "22", "23", "24",
-  "25", "26", "27", "28",
-  "29", "30", "31", "32",
-  "33", "34", "35", "36",
-  "37", "38", "39", "40",
-  "41", "42", "43", "44",
-  "45", "46", "47", "48",
-  "49", "50", "51", "52",
-  "53", "54", "55", "56",
-  "57", "58", "59", "60",
-  "61", "62", "63", "64"
-];
-var studentsC = [
-  "1", "2", "3", "4",
-  "5", "6", "7", "8",
-  "9", "10", "11", "12",
-  "13", "14", "15", "16",
-  "17", "18", "19", "20",
-  "21", "22", "23", "24",
-  "25", "26", "27", "28",
-  "29", "30", "31", "32",
-  "33", "34", "35", "36",
-  "37", "38", "39", "40",
-  "41", "42", "43", "44",
-  "45", "46", "47", "48",
-  "49", "50", "51", "52",
-  "53", "54", "55", "56",
-  "57", "58", "59", "60",
-  "61", "62", "63", "64"
-];
-var currentStudents = studentsA;
-
-// Hàm tạo mảng
-function getSeatAssignments() {
-  var assignments = currentStudents.slice(); //Lấy danh sách học sinh
-  var emptySeats = 64 - assignments.length;
-  for (var i = 0; i < emptySeats; i++) {
-    assignments.push(""); //thêm chỗ ngồi trống
-  }
-  return assignments;
-}
-
-// Hàm xáo trộn mảng sử dụng thuật toán Fisher-Yates
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    let j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-}
-
-// Hàm tạo bảng chỗ ngồi 8 hàng x 10 cột (bao gồm lối đi và tiêu đề hàng)
+//Update 29/8/2025
+// Tạo bảng 8×9 (8 hàng, mỗi hàng 9 ô, gồm lối đi cột 5)
 function createTable() {
-  var table = document.getElementById("classroom");
+  const table = document.getElementById("classroom");
   table.innerHTML = "";
-  for (var i = 0; i < 8; i++) {
-    var row = document.createElement("tr");
-    var rowHeader = document.createElement("td");
-    rowHeader.textContent = "Hàng " + (i + 1);
-    rowHeader.classList.add("row-header");
-    row.appendChild(rowHeader);
-    for (var j = 0; j < 9; j++) {
-      var cell = document.createElement("td");
+  for (let i = 0; i < 8; i++) {
+    const row = document.createElement("tr");
+    const header = document.createElement("td");
+    header.textContent = "Hàng " + (i + 1);
+    header.classList.add("row-header");
+    row.appendChild(header);
+    for (let j = 0; j < 9; j++) {
+      const cell = document.createElement("td");
       if (j === 4) {
         cell.classList.add("aisle");
         if (i === 3) { // Hàng 4 (index 3)
-          cell.textContent = "Lối đi";
+          cell.textContent = "LỐI ĐI";
         }
       }
       row.appendChild(cell);
@@ -95,45 +23,39 @@ function createTable() {
   }
 }
 
-// Hàm sắp xếp học sinh ngẫu nhiên vào chỗ ngồi (bỏ qua lối đi và tiêu đề hàng)
-function randomize() {
-  var inputField = document.getElementById("de-cay-so");
-  var classSelect = document.getElementById("class-select");
-  
-  if (inputField.value.trim() === "") {
-    alert("Vui lòng nhập số thứ tự đề vào ô 'ĐỀ CÀY SỐ' trước khi sắp xếp chỗ ngồi!!");
-    return;
+// Fisher–Yates shuffle
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
-  
-  if (classSelect.value === "") {
-    alert("Vui lòng chọn lớp trước khi sắp xếp chỗ ngồi!");
+}
+
+// Hàm chính: đọc số học sinh, kiểm tra, shuffle, gán vào bảng
+function randomize() {
+  const input = document.getElementById("student-count");
+  const n = parseInt(input.value, 10);
+  input.classList.remove("input-error");
+  if (isNaN(n) || n < 1 || n > 64) {
+    input.classList.add("input-error");
+    alert("Vui lòng nhập số học sinh từ 1 đến 64!");
     return;
   }
 
-  var cells = document.querySelectorAll("#classroom td:not(.aisle):not(.row-header)");
-  var assignments = getSeatAssignments();
+  // Tạo list từ "1" đến "n"
+  const assignments = Array.from({ length: n }, (_, i) => String(i + 1));
+  // Đệm thêm "" đến 64 chỗ
+  while (assignments.length < 64) assignments.push("");
   shuffle(assignments);
-  cells.forEach(function(cell, index) {
-    cell.textContent = assignments[index];
+
+  // Gán vào từng ô (bỏ qua các ô aisle và header)
+  const cells = document.querySelectorAll(
+    "#classroom td:not(.aisle):not(.row-header)"
+  );
+  cells.forEach((cell, idx) => {
+    cell.textContent = assignments[idx];
   });
 }
 
-//Lấy số lượng học sinh dựa trên lựa chọn lớp
-function updateClass() {
-  var classSelect = document.getElementById("class-select");
-  var selectedClass = classSelect.value;
-  if (selectedClass === "") {
-    alert("Vui lòng chọn lớp trước khi sắp xếp chỗ ngồi!");
-    currentStudents = [];
-  } else if (selectedClass === "A") {
-    currentStudents = studentsA;
-  } else if (selectedClass === "B") {
-    currentStudents = studentsB;
-  } else if (selectedClass === "C") {
-    currentStudents = studentsC;
-  }
-  randomize();
-}
-
-//Tạo bảng và thực hiện sắp xếp ngay khi trang được tải
+// Khởi tạo khi load trang
 createTable();
