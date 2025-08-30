@@ -1,5 +1,5 @@
-//Update 29/8/2025
-// Tạo bảng 8×9 (8 hàng, mỗi hàng 9 ô, gồm lối đi cột 5)
+// Update algorithm 30/8/2024
+// Tạo bảng chỗ ngồi
 function createTable() {
   const table = document.getElementById("classroom");
   table.innerHTML = "";
@@ -23,7 +23,7 @@ function createTable() {
   }
 }
 
-// Fisher–Yates shuffle
+// Randomize
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -31,31 +31,61 @@ function shuffle(array) {
   }
 }
 
-// Hàm chính: đọc số học sinh, kiểm tra, shuffle, gán vào bảng
+// Phân phối học sinh
+function distributeCounts(total) {
+  const rows = 8;
+  const base = Math.floor(total / rows);
+  const extra = total % rows;
+  const counts = Array(rows).fill(base);
+  for (let i = 0; i < extra; i++) counts[i]++;
+  shuffle(counts);
+  return counts;
+}
+
+// Gán ngẫu nhiên
 function randomize() {
   const input = document.getElementById("student-count");
   const n = parseInt(input.value, 10);
   input.classList.remove("input-error");
+
   if (isNaN(n) || n < 1 || n > 64) {
     input.classList.add("input-error");
     alert("Vui lòng nhập số học sinh từ 1 đến 64!");
     return;
   }
 
-  // Tạo list từ "1" đến "n"
-  const assignments = Array.from({ length: n }, (_, i) => String(i + 1));
-  // Đệm thêm "" đến 64 chỗ
-  while (assignments.length < 64) assignments.push("");
-  shuffle(assignments);
+  const counts = distributeCounts(n);
+  const students = Array.from({ length: n }, (_, i) => String(i + 1));
+  shuffle(students);
 
-  // Gán vào từng ô (bỏ qua các ô aisle và header)
-  const cells = document.querySelectorAll(
-    "#classroom td:not(.aisle):not(.row-header)"
-  );
-  cells.forEach((cell, idx) => {
-    cell.textContent = assignments[idx];
+  const rowsEl = document.querySelectorAll("#classroom tr");
+  let idx = 0;
+
+  rowsEl.forEach((rowEl, i) => {
+    // Lấy tất cả ô ghế (8 ô: 4 trái, 4 phải)
+    const seats = Array.from(rowEl.querySelectorAll("td:not(.row-header):not(.aisle)"));
+    const leftSeats = seats.slice(0, 4);
+    const rightSeats = seats.slice(4, 8);
+    const totalThis = counts[i];
+    const leftCount = Math.ceil(totalThis / 2);
+    const rightCount = totalThis - leftCount;
+
+    // Shuffle vị trí ghế trước khi gán
+    shuffle(leftSeats);
+    shuffle(rightSeats);
+
+    // Gán học sinh vào ghế trái
+    leftSeats.forEach((cell, j) => {
+      cell.textContent = j < leftCount && idx < students.length ? students[idx++] : "";
+    });
+    // Gán học sinh vào ghế phải
+    rightSeats.forEach((cell, j) => {
+      cell.textContent = j < rightCount && idx < students.length ? students[idx++] : "";
+    });
   });
 }
 
-// Khởi tạo khi load trang
-createTable();
+document.addEventListener("DOMContentLoaded", () => {
+  createTable();
+  document.querySelector("button").addEventListener("click", randomize);
+});
