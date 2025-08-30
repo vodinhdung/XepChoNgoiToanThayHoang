@@ -87,5 +87,5 @@ function randomize() {
 
 document.addEventListener("DOMContentLoaded", () => {
   createTable();
-  document.querySelector("button").addEventListener("click", randomize);
+  document.getElementById("random-btn").addEventListener("click", randomize);
 });
